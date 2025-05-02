@@ -1,4 +1,4 @@
-package com.ayaan.kharbarkhotala.presentation.utils
+package com.ayaan.kharbarkhotala.presentation.common
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button

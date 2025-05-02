@@ -1,6 +1,5 @@
 package com.ayaan.kharbarkhotala.presentation.onboarding
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,14 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding2
 import com.ayaan.kharbarkhotala.presentation.Dimensions.PageIndicatorWidth
 import com.ayaan.kharbarkhotala.presentation.onboarding.components.OnBoardingPage
 import com.ayaan.kharbarkhotala.presentation.onboarding.components.PageIndicator
-import com.ayaan.kharbarkhotala.presentation.utils.NewsButton
-import com.ayaan.kharbarkhotala.presentation.utils.NewsTextButton
+import com.ayaan.kharbarkhotala.presentation.common.NewsButton
+import com.ayaan.kharbarkhotala.presentation.common.NewsTextButton
 import kotlinx.coroutines.launch
 
 @Composable
