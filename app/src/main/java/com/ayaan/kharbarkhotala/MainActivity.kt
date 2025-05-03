@@ -15,11 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import com.ayaan.kharbarkhotala.presentation.onboarding.OnBoardingScreen
 import com.ayaan.kharbarkhotala.ui.theme.KharbarKhotalaTheme
 import javax.inject.Inject
 import com.ayaan.kharbarkhotala.domain.usecases.AppEntryUseCase
+import com.ayaan.kharbarkhotala.presentation.onboarding.OnBoardingViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 @AndroidEntryPoint
@@ -39,7 +41,9 @@ class MainActivity : ComponentActivity() {
                 Box(modifier = Modifier
                     .background(color=MaterialTheme.colorScheme.background)
                 ){
-                    OnBoardingScreen()
+                    val viewModel: OnBoardingViewModel = hiltViewModel()
+                    OnBoardingScreen(
+                        event= { viewModel.onEvent(it) })
                 }
             }
         }
