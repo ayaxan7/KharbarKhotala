@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+//    alias(libs.plugins.google.gms.google.services)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
 }
@@ -29,15 +30,22 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
         jvmTarget = "11"
     }
+
     buildFeatures {
         compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.kotlin.get()
     }
 }
 
@@ -45,22 +53,52 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.core.splashscreen)
+
+    // Compose Navigation + Hilt
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    ksp(libs.google.hilt.compiler)
+
+    // Firebase
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
-    implementation(libs.androidx.espresso.core)
     implementation(libs.firebase.messaging)
-    implementation(libs.play.services.location)
-    implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.storage.ktx)
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.datastore.core.android)
-    implementation(libs.androidx.datastore.preferences.core.android)
-    implementation(libs.androidx.datastore.preferences)
+
+    // Google Maps
+//    implementation(libs.play.services.maps)
+//    implementation(libs.play.services.location)
+//    implementation(libs.maps.compose)
+    implementation ("androidx.datastore:datastore-preferences:1.1.0")
+//    // DataStore
+//    implementation(libs.androidx.datastore)
+//    implementation(libs.androidx.datastore.preferences)
+//    implementation(libs.androidx.datastore.preferences.rxjava2)
+//    implementation(libs.androidx.datastore.preferences.rxjava3)
+//    implementation(libs.androidx.datastore.preferences.core)
+//    implementation(libs.androidx.datastore.rxjava2)
+//    implementation(libs.androidx.datastore.rxjava3)
+//    implementation(libs.androidx.datastore.core)
+//    implementation(libs.datastore.core)
+//    implementation(libs.datastore.preferences)
+    // Coil
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+
+    // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -68,27 +106,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.hilt.navigation.compose)
-    implementation (libs.hilt.android)
-    ksp(libs.google.hilt.compiler)
 
-    // For instrumentation tests
-    androidTestImplementation  (libs.dagger.hilt.android.testing)
+    // Hilt Testing
+    androidTestImplementation(libs.dagger.hilt.android.testing)
     kspAndroidTest(libs.google.hilt.compiler)
-
-    // For local unit tests
-    testImplementation (libs.dagger.hilt.android.testing)
+    testImplementation(libs.dagger.hilt.android.testing)
     kspTest(libs.google.hilt.compiler)
-
-    //GMAPS
-    implementation(libs.play.services.maps)
-    implementation(libs.maps.compose) // Jetpack Compose support
-    //For XML App
-    implementation("io.coil-kt:coil:2.7.0")
-    //For Compose App
-    implementation("io.coil-kt:coil-compose:2.7.0")
-    //retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 }
