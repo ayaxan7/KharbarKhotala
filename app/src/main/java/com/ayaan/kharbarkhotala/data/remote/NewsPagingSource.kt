@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
+import com.ayaan.kharbarkhotala.BuildConfig
 
 class NewsPagingSource(
     private val newsApi: NewsApi,
@@ -17,22 +18,22 @@ class NewsPagingSource(
         }
     }
 
-    override suspend fun load (params:LoadParams<Int>):LoadResult<Int,Article>{
-        val page=params.key?:1
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
+        val page = params.key ?: 1
+        val apiKey = BuildConfig.NEWS_API_KEY
         return try {
-            val newsResponse=newsApi.getNews(sources=sources,page=page,apiKey= R.string.news_api_key.toString())
-            totalNewsCount+= newsResponse.articles.size
-            val articles=newsResponse.articles.distinctBy { it.title } //Removes duplicates
+            val newsResponse = newsApi.getNews(sources = sources, page = page, apiKey = apiKey)
+            totalNewsCount += newsResponse.articles.size
+            val articles = newsResponse.articles.distinctBy { it.title }
             LoadResult.Page(
                 data = articles,
                 prevKey = null,
-                nextKey = if (totalNewsCount == newsResponse.totalResults) null else page+1
+                nextKey = if (totalNewsCount == newsResponse.totalResults) null else page + 1
             )
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
-            LoadResult.Error(
-                throwable = e
-            )
+            return LoadResult.Error(throwable = e)
         }
     }
+
 }

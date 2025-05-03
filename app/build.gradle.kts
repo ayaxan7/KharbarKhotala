@@ -1,11 +1,21 @@
+import java.util.Properties
+//import org.gradle.kotlin.dsl.support.delegates.properties.*
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-//    alias(libs.plugins.google.gms.google.services)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
 }
+// Load from local.properties
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties().apply {
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
+}
+val newsApiKey = localProperties.getProperty("NEWS_API_KEY") ?: "\"MISSING_API_KEY\""
+
 
 android {
     namespace = "com.ayaan.kharbarkhotala"
@@ -17,7 +27,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -42,6 +52,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig=true
     }
 
     composeOptions {
