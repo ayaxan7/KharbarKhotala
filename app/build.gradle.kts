@@ -112,4 +112,7 @@ dependencies {
     kspAndroidTest(libs.google.hilt.compiler)
     testImplementation(libs.dagger.hilt.android.testing)
     kspTest(libs.google.hilt.compiler)
+
+    //Paging
+    implementation(libs.androidx.paging)
 }

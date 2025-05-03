@@ -1,4 +1,4 @@
-package com.ayaan.kharbarkhotala.domain.usecases
+package com.ayaan.kharbarkhotala.domain.usecases.appentry
 
 import com.ayaan.kharbarkhotala.domain.manager.LocalUserManager
 

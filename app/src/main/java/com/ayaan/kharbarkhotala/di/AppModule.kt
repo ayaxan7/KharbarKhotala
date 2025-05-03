@@ -3,9 +3,9 @@ package com.ayaan.kharbarkhotala.di
 import android.app.Application
 import com.ayaan.kharbarkhotala.data.manager.LocalUserManagerImpl
 import com.ayaan.kharbarkhotala.domain.manager.LocalUserManager
-import com.ayaan.kharbarkhotala.domain.usecases.AppEntryUseCase
-import com.ayaan.kharbarkhotala.domain.usecases.ReadAppEntry
-import com.ayaan.kharbarkhotala.domain.usecases.SaveAppEntry
+import com.ayaan.kharbarkhotala.domain.usecases.appentry.AppEntryUseCase
+import com.ayaan.kharbarkhotala.domain.usecases.appentry.ReadAppEntry
+import com.ayaan.kharbarkhotala.domain.usecases.appentry.SaveAppEntry
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

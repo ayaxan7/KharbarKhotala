@@ -1,4 +1,4 @@
-package com.ayaan.kharbarkhotala.domain.usecases
+package com.ayaan.kharbarkhotala.domain.usecases.appentry
 
 data class AppEntryUseCase(
     val readAppEntry: ReadAppEntry,

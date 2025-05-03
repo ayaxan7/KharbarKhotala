@@ -2,7 +2,7 @@ package com.ayaan.kharbarkhotala.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ayaan.kharbarkhotala.domain.usecases.AppEntryUseCase
+import com.ayaan.kharbarkhotala.domain.usecases.appentry.AppEntryUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
