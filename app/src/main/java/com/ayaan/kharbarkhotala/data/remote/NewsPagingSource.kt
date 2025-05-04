@@ -2,7 +2,6 @@ package com.ayaan.kharbarkhotala.data.remote
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
 import com.ayaan.kharbarkhotala.BuildConfig
 
