@@ -1,15 +1,17 @@
 [versions]
 agp = "8.9.2"
+datastorePreferences = "1.1.0"
 kotlin = "2.1.20"
 composeBom = "2025.04.01"
 
 hiltAndroid = "2.56.2"
-hiltAndroidTesting = "2.54"
+hiltAndroidTesting = "2.56.2"
 hiltNavigationCompose = "1.2.0"
 coreKtx = "1.16.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
 navigationCompose = "2.8.9"
+pagingCompose = "3.3.6"
 runtimeLivedata = "1.8.0"
 coreSplashscreen = "1.0.1"
 firebaseAuth = "23.2.0"
@@ -26,7 +28,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 coil = "2.7.0"
 retrofit = "2.11.0"
-paging="3.2.0"
+paging="3.3.6"
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -35,8 +37,10 @@ google-gms-google-services = { id = "com.google.gms.google-services", version.re
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "pagingCompose" }
 androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
@@ -51,7 +55,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
-androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }

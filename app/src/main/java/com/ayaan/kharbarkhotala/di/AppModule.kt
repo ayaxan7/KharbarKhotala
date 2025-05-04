@@ -11,6 +11,7 @@ import com.ayaan.kharbarkhotala.domain.usecases.appentry.ReadAppEntry
 import com.ayaan.kharbarkhotala.domain.usecases.appentry.SaveAppEntry
 import com.ayaan.kharbarkhotala.domain.usecases.news.GetNews
 import com.ayaan.kharbarkhotala.domain.usecases.news.NewsUseCases
+import com.ayaan.kharbarkhotala.domain.usecases.news.SearchNews
 import com.ayaan.kharbarkhotala.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -68,6 +69,9 @@ object AppModule {
     ): NewsUseCases{
         return NewsUseCases(
             getNews=GetNews(
+                newsRepository = newsRepository,
+            ),
+            searchNews = SearchNews(
                 newsRepository = newsRepository
             )
         )

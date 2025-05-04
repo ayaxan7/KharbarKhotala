@@ -8,7 +8,7 @@ import com.ayaan.kharbarkhotala.domain.repository.NewsRepository
 import kotlinx.coroutines.flow.Flow
 import com.ayaan.kharbarkhotala.data.remote.NewsApi
 import com.ayaan.kharbarkhotala.data.remote.NewsPagingSource
-
+import com.ayaan.kharbarkhotala.data.remote.SearchNewsPagingSource
 class NewsRepositoryImpl(
     private val newsApi: NewsApi
 ) : NewsRepository{
@@ -17,6 +17,23 @@ class NewsRepositoryImpl(
             config= PagingConfig(pageSize=10),
             pagingSourceFactory={
                 NewsPagingSource(
+                    newsApi = newsApi,
+                    sources = sources.joinToString(separator = ",")
+                )
+            }
+        )
+        return pager.flow
+    }
+
+    override fun searchNews(
+        query: String,
+        sources: List<String>
+    ): Flow<PagingData<Article>> {
+        val pager= Pager(
+            config= PagingConfig(pageSize=10),
+            pagingSourceFactory={
+                SearchNewsPagingSource(
+                    query=query,
                     newsApi = newsApi,
                     sources = sources.joinToString(separator = ",")
                 )

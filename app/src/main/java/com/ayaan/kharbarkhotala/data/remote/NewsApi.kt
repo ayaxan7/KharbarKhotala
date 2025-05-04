@@ -1,7 +1,6 @@
 package com.ayaan.kharbarkhotala.data.remote
 
 import com.ayaan.kharbarkhotala.data.remote.dto.NewsResponse
-import com.ayaan.kharbarkhotala.domain.model.Article
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,8 +9,13 @@ interface NewsApi {
     suspend fun getNews(
         @Query("page") page: Int,
         @Query("sources") sources: String,
-//        @Query("q") query: String,
         @Query("apiKey") apiKey: String
     ): NewsResponse
-//    ): List<Article>
+    @GET("everything")
+    suspend fun searchNews(
+        @Query("page") page: Int,
+        @Query("q") query: String,
+        @Query("sources") sources: String,
+        @Query("apiKey") apiKey: String
+    ): NewsResponse
 }

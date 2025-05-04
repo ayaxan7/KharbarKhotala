@@ -1,5 +1,5 @@
 import java.util.Properties
-//import org.gradle.kotlin.dsl.support.delegates.properties.*
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -15,7 +15,6 @@ val localProperties = Properties().apply {
     }
 }
 val newsApiKey = localProperties.getProperty("NEWS_API_KEY") ?: "\"MISSING_API_KEY\""
-
 
 android {
     namespace = "com.ayaan.kharbarkhotala"
@@ -89,7 +88,7 @@ dependencies {
 //    implementation(libs.play.services.maps)
 //    implementation(libs.play.services.location)
 //    implementation(libs.maps.compose)
-    implementation ("androidx.datastore:datastore-preferences:1.1.0")
+    implementation (libs.androidx.datastore.preferences)
 //    // DataStore
 //    implementation(libs.androidx.datastore)
 //    implementation(libs.androidx.datastore.preferences)
@@ -126,4 +125,5 @@ dependencies {
 
     //Paging
     implementation(libs.androidx.paging)
+    implementation(libs.androidx.paging.compose)
 }

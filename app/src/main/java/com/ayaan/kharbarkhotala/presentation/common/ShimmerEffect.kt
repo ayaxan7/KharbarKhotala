@@ -40,7 +40,7 @@ fun Modifier.shimmerEffect() = composed {
 
 @Composable
 fun ArticleCardShimmer(
-    modifier: Modifier = Modifier, onClick: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier
