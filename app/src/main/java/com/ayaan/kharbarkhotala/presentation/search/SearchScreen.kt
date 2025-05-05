@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.ayaan.kharbarkhotala.presentation.Dimensions.ExtraSmallPadding
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
 import com.ayaan.kharbarkhotala.presentation.common.ArticlesList
 import com.ayaan.kharbarkhotala.presentation.common.SearchBar
@@ -27,7 +28,7 @@ fun SearchScreen(
 
     Column(
         modifier = Modifier
-            .padding(top = MediumPadding1, start = MediumPadding1, end = MediumPadding1)
+            .padding(top = MediumPadding1, start = ExtraSmallPadding, end = ExtraSmallPadding)
             .statusBarsPadding()
             .fillMaxSize()
     ) {
@@ -45,6 +46,7 @@ fun SearchScreen(
             if(articles.itemCount == 0) {
              Column(
                     modifier = Modifier
+                        .fillMaxSize()
                         .padding(MediumPadding1),
                  verticalArrangement = Arrangement.Center,
                  horizontalAlignment = Alignment.CenterHorizontally
