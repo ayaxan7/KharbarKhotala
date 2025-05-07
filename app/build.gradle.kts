@@ -126,4 +126,10 @@ dependencies {
     //Paging
     implementation(libs.androidx.paging)
     implementation(libs.androidx.paging.compose)
+
+    //RoomDB
+    implementation(libs.androidx.room.runtime)
+    annotationProcessor(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.room.ktx)
 }
