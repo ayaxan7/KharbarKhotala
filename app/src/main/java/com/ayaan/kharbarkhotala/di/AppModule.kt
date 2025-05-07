@@ -1,6 +1,10 @@
 package com.ayaan.kharbarkhotala.di
 
 import android.app.Application
+import androidx.room.Room
+import com.ayaan.kharbarkhotala.data.local.NewsDao
+import com.ayaan.kharbarkhotala.data.local.NewsDatabase
+import com.ayaan.kharbarkhotala.data.local.NewsTypeConverter
 import com.ayaan.kharbarkhotala.data.manager.LocalUserManagerImpl
 import com.ayaan.kharbarkhotala.data.remote.NewsApi
 import com.ayaan.kharbarkhotala.data.repository.NewsRepositoryImpl
@@ -13,6 +17,7 @@ import com.ayaan.kharbarkhotala.domain.usecases.news.GetNews
 import com.ayaan.kharbarkhotala.domain.usecases.news.NewsUseCases
 import com.ayaan.kharbarkhotala.domain.usecases.news.SearchNews
 import com.ayaan.kharbarkhotala.utils.Constants.BASE_URL
+import com.ayaan.kharbarkhotala.utils.Constants.NEWS_DB
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -55,10 +60,12 @@ object AppModule {
     @Provides
     @Singleton
     fun provideNewsRepository(
-        newsApi: NewsApi
+        newsApi: NewsApi,
+        newsDao: NewsDao
     ): NewsRepository {
         return NewsRepositoryImpl(
-            newsApi = newsApi
+            newsApi = newsApi,
+            newsDao= newsDao
         )
     }
 
@@ -76,4 +83,22 @@ object AppModule {
             )
         )
     }
+
+    @Provides
+    @Singleton
+    fun provideNewsDatabase(
+        application: Application
+    ): NewsDatabase {
+        return Room.databaseBuilder(
+                context=application,
+                klass = NewsDatabase::class.java,
+                name = NEWS_DB
+            ).addTypeConverter(NewsTypeConverter()).fallbackToDestructiveMigration(false).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideNewsDao(
+        newsDatabase: NewsDatabase
+    ):NewsDao=newsDatabase.newsDao
 }
