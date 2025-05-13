@@ -5,7 +5,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,15 +15,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -32,14 +35,13 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
-import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding0
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
 import com.ayaan.kharbarkhotala.presentation.common.ArticlesList
 import com.ayaan.kharbarkhotala.presentation.common.SearchBar
-import com.ayaan.kharbarkhotala.presentation.navgraph.Route
-import com.ayaan.kharbarkhotala.ui.theme.Black
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     articles: LazyPagingItems<Article>,
@@ -48,12 +50,13 @@ fun HomeScreen(
     navigateToSearch: () -> Unit,
     navigateToDetails: (Article) -> Unit
 ) {
-
+    val isRefreshing = remember { mutableStateOf(false) }
+    val pullRefreshState = rememberPullToRefreshState()
+    val coroutineScope = rememberCoroutineScope()
     val titles by remember {
         derivedStateOf {
             if (articles.itemCount > 10) {
-                articles.itemSnapshotList.items
-                    .slice(IntRange(start = 0, endInclusive = 9))
+                articles.itemSnapshotList.items.slice(IntRange(start = 0, endInclusive = 9))
                     .joinToString(separator = " \uD83D\uDFE5 ") { it.title.toString() }
             } else {
                 ""
@@ -95,7 +98,8 @@ fun HomeScreen(
         val scrollState = rememberScrollState(initial = state.scrollValue)
 
         Text(
-            text = titles, modifier = Modifier
+            text = titles,
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = MediumPadding1)
                 .horizontalScroll(scrollState, enabled = false),
@@ -116,8 +120,7 @@ fun HomeScreen(
             delay(500)
             if (state.maxScrollingValue > 0) {
                 scrollState.animateScrollTo(
-                    value = state.maxScrollingValue,
-                    animationSpec = infiniteRepeatable(
+                    value = state.maxScrollingValue, animationSpec = infiniteRepeatable(
                         tween(
                             durationMillis = (state.maxScrollingValue - state.scrollValue) * 50_000 / state.maxScrollingValue,
                             easing = LinearEasing,
@@ -130,10 +133,22 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(MediumPadding1))
 
-        ArticlesList(
-            modifier = Modifier.padding(horizontal = MediumPadding1),
-            articles = articles,
-            onClick = navigateToDetails
-        )
+        PullToRefreshBox(
+            isRefreshing = isRefreshing.value,
+            onRefresh = {
+                coroutineScope.launch {
+                    isRefreshing.value = true
+                    articles.refresh()
+                    delay(500)
+                    isRefreshing.value = false
+                }
+            }, modifier = Modifier.fillMaxSize()
+        ) {
+            ArticlesList(
+                modifier = Modifier.padding(horizontal = MediumPadding1),
+                articles = articles,
+                onClick = navigateToDetails
+            )
+        }
     }
 }
