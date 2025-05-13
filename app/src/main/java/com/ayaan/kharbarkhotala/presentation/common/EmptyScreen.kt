@@ -42,7 +42,7 @@ fun EmptyScreen(error: LoadState.Error? = null) {
     }
 
     var icon by remember {
-        mutableIntStateOf(R.drawable.ic_network_error)
+        mutableStateOf(R.drawable.ic_network_error)
     }
 
     if (error == null){
@@ -109,7 +109,6 @@ fun parseErrorMessage(error: LoadState.Error?): String {
         }
     }
 }
-
 @Preview(showBackground = true)
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable

@@ -2,12 +2,13 @@ package com.ayaan.kharbarkhotala.domain.usecases.news
 
 import com.ayaan.kharbarkhotala.data.local.NewsDao
 import com.ayaan.kharbarkhotala.domain.model.Article
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class InsertArticle @Inject constructor(
+class GetSavedArticles @Inject constructor(
     private val newsDao: NewsDao
 ) {
-    suspend operator fun invoke(article: Article){
-        newsDao.insert(article)
+    operator fun invoke(): Flow<List<Article>>{
+        return newsDao.getArticles()
     }
 }

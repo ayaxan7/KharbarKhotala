@@ -10,11 +10,12 @@ import com.ayaan.kharbarkhotala.utils.Constants.USER_SETTINGS
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import androidx.datastore.preferences.core.edit
+import javax.inject.Inject
 
 // Define the DataStore as an extension property on Context
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = USER_SETTINGS)
 
-class LocalUserManagerImpl(
+class LocalUserManagerImpl @Inject constructor(
     private val context: Context
 ) : LocalUserManager {
 

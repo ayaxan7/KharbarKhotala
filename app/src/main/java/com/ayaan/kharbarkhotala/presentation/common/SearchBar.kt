@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,80 +31,87 @@ import com.ayaan.kharbarkhotala.ui.theme.Black
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
+import com.ayaan.kharbarkhotala.presentation.Dimensions.IconSize
 import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
 import com.ayaan.kharbarkhotala.ui.theme.Blue
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBar(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     text: String,
     readOnly: Boolean,
-    onClick:(()->Unit)?=null,
-    onValueChange:(String)->Unit,
-    onSearch:()->Unit,
-){
-    val interactionSource = remember{
+    onClick: (() -> Unit)? = null,
+    onValueChange: (String) -> Unit,
+    onSearch: () -> Unit
+) {
+
+    val interactionSource = remember {
         MutableInteractionSource()
     }
-    val isClicked=interactionSource.collectIsPressedAsState().value
-    LaunchedEffect(key1=isClicked) {
+    val isClicked = interactionSource.collectIsPressedAsState().value
+    LaunchedEffect(key1 = isClicked){
         if(isClicked){
             onClick?.invoke()
         }
     }
-    Box(modifier= modifier){
+
+    Box(modifier = modifier) {
         TextField(
-            modifier=Modifier.fillMaxWidth().padding(SmallPadding).searchBarBorder(),
-            value=text,
-            onValueChange = {onValueChange(it)},
-            readOnly=readOnly,
+            modifier = Modifier
+                .fillMaxWidth()
+                .searchBar(),
+            value = text,
+            onValueChange = onValueChange,
+            readOnly = readOnly,
             leadingIcon = {
                 Icon(
-                    painter=painterResource(id=R.drawable.ic_search),
+                    painter = painterResource(id = R.drawable.ic_search),
                     contentDescription = null,
-                    modifier = Modifier.size(SmallIconSize),
-                    tint= colorResource(id=R.color.body)
+                    modifier = Modifier.size(IconSize),
+                    tint = colorResource(id = R.color.body)
                 )
             },
             placeholder = {
                 Text(
-                    text="Search",
-                    style= MaterialTheme.typography.bodySmall,
-                    color= colorResource(id=R.color.placeholder)
+                    text = "Search",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = colorResource(id = R.color.placeholder)
                 )
             },
-            shape= MaterialTheme.shapes.medium,
+            shape = MaterialTheme.shapes.medium,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorResource(id = R.color.input_background),
                 unfocusedContainerColor = colorResource(id = R.color.input_background),
-                focusedTextColor = Black,
-                unfocusedTextColor = Black,
-                cursorColor = Blue,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.Black,
+                cursorColor =  Color.Black,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent
             ),
-            singleLine=true,
-            keyboardActions=KeyboardActions(
-                onSearch={
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+            keyboardActions = KeyboardActions(
+                onSearch = {
                     onSearch()
                 }
             ),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-            textStyle= MaterialTheme.typography.bodySmall,
-            interactionSource=interactionSource
+            textStyle = MaterialTheme.typography.bodySmall,
+            interactionSource = interactionSource
         )
     }
 }
 
-
-@Composable
-fun Modifier.searchBarBorder()=composed{
+fun Modifier.searchBar(): Modifier = composed {
+    if (!isSystemInDarkTheme()) {
         border(
-            width=1. dp,
-            color= Black,
-            shape= MaterialTheme.shapes.medium
+            width = 1.dp,
+            color = Color.Black,
+            shape = MaterialTheme.shapes.medium
         )
+    } else {
+        this
+    }
 }

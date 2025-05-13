@@ -3,6 +3,8 @@ package com.ayaan.kharbarkhotala.presentation.details.components
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,29 +24,31 @@ import com.ayaan.kharbarkhotala.R
 fun DetailsTopBar(
     onBrowsingClick: () -> Unit,
     onShareClick: () -> Unit,
-    onBookmarkClick: () -> Unit,
+    onBookMarkClick: () -> Unit,
     onBackClick: () -> Unit,
 ) {
+
     TopAppBar(
-        title={},
-        modifier= Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = Color.Transparent,
-            actionIconContentColor = colorResource(id=R.color.body),
-            navigationIconContentColor = colorResource(R.color.body)
+            actionIconContentColor = colorResource(id = R.color.body),
+            navigationIconContentColor = colorResource(id = R.color.body),
         ),
+        title = {},
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    painter= painterResource(R.drawable.ic_back),
-                    contentDescription = null
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = null,
                 )
             }
         },
         actions = {
-            IconButton(onClick = onBookmarkClick) {
+
+            IconButton(onClick = onBookMarkClick) {
                 Icon(
-                    painter= painterResource(R.drawable.ic_bookmark),
+                    painter = painterResource(id = R.drawable.ic_bookmark),
                     contentDescription = null
                 )
             }
@@ -56,10 +60,10 @@ fun DetailsTopBar(
             }
             IconButton(onClick = onBrowsingClick) {
                 Icon(
-                    painter= painterResource(R.drawable.ic_network),
+                    painter = painterResource(id = R.drawable.ic_network),
                     contentDescription = null
                 )
             }
-        }
+        },
     )
 }

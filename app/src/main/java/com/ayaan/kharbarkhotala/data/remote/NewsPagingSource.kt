@@ -19,9 +19,8 @@ class NewsPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val page = params.key ?: 1
-        val apiKey = BuildConfig.NEWS_API_KEY
         return try {
-            val newsResponse = newsApi.getNews(sources = sources, page = page, apiKey = apiKey)
+            val newsResponse = newsApi.getNews(sources = sources, page = page)
             totalNewsCount += newsResponse.articles.size
             val articles = newsResponse.articles.distinctBy { it.title }
             LoadResult.Page(

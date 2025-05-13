@@ -15,40 +15,35 @@ import com.ayaan.kharbarkhotala.ui.theme.WhiteGray
 
 @Composable
 fun NewsButton(
-    text:String,
+    text: String,
     onClick: () -> Unit,
-){
+) {
+
     Button(
-        onClick=onClick,
+        onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Blue,
+            containerColor = MaterialTheme.colorScheme.primary,
             contentColor = Color.White
         ),
-        shape= RoundedCornerShape(size=6.dp)
+        shape = RoundedCornerShape(size = 6.dp)
     ) {
         Text(
             text = text,
-            style= MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
             color = Color.White
         )
     }
 }
+
 @Composable
 fun NewsTextButton(
-    text:String,
-    onClick: () -> Unit
-){
-    TextButton(
-        onClick=onClick,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            contentColor = Color.White
-        ),
-        shape= RoundedCornerShape(size=6.dp)
-    ) {
+    text: String,
+    onClick: () -> Unit,
+) {
+    TextButton(onClick = onClick) {
         Text(
             text = text,
-            style= MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
+            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.SemiBold),
             color = WhiteGray
         )
     }

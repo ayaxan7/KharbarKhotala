@@ -13,6 +13,7 @@ import com.ayaan.kharbarkhotala.presentation.bookmark.BookmarkScreen
 import com.ayaan.kharbarkhotala.presentation.bookmark.BookmarkViewModel
 import com.ayaan.kharbarkhotala.presentation.home.HomeScreen
 import com.ayaan.kharbarkhotala.presentation.home.HomeViewModel
+import com.ayaan.kharbarkhotala.presentation.newsnavigation.NewsNavigator
 import com.ayaan.kharbarkhotala.presentation.onboarding.OnBoardingScreen
 import com.ayaan.kharbarkhotala.presentation.onboarding.OnBoardingViewModel
 import com.ayaan.kharbarkhotala.presentation.search.SearchScreen
@@ -20,39 +21,27 @@ import com.ayaan.kharbarkhotala.presentation.search.SearchViewModel
 
 @Composable
 fun NavGraph(
-    startDestination:String,
-){
-    val navController= rememberNavController()
-    NavHost(startDestination = startDestination, navController = navController) {
+    startDestination: String
+) {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = startDestination) {
         navigation(
-            route=Route.AppStartNavigation.route,
+            route = Route.AppStartNavigation.route,
             startDestination = Route.OnBoardingScreen.route
-        ){
-            composable(
-                route=Route.OnBoardingScreen.route
-            ) {
+        ) {
+            composable(route = Route.OnBoardingScreen.route) {
                 val viewModel: OnBoardingViewModel = hiltViewModel()
-                OnBoardingScreen(
-                    event= { viewModel.onEvent(it) }
-                )
+                OnBoardingScreen(onEvent = viewModel::onEvent)
             }
         }
+
         navigation(
-            route=Route.NewsNavigation.route,
-            startDestination=Route.NewsNavigatorScreen.route
-        ){
-            composable(
-                route=Route.NewsNavigatorScreen.route
-            ) {
-                val viewModel: BookmarkViewModel =hiltViewModel()
-                BookmarkScreen(
-                    state = viewModel.state.value,
-                    navigate = { navController.navigate(it) }
-                )
-//                val viewModel: SearchViewModel=hiltViewModel()
-//                SearchScreen(state=viewModel.state.value,event=viewModel::onEvent)
-//                val articles = viewModel.news.collectAsLazyPagingItems()
-//                HomeScreen(articles=articles,navigate = { })
+            route = Route.NewsNavigation.route,
+            startDestination = Route.NewsNavigatorScreen.route
+        ) {
+            composable(route = Route.NewsNavigatorScreen.route){
+                NewsNavigator()
             }
         }
     }

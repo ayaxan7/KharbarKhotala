@@ -10,7 +10,9 @@ import kotlinx.coroutines.flow.Flow
 import com.ayaan.kharbarkhotala.data.remote.NewsApi
 import com.ayaan.kharbarkhotala.data.remote.NewsPagingSource
 import com.ayaan.kharbarkhotala.data.remote.SearchNewsPagingSource
-class NewsRepositoryImpl(
+import javax.inject.Inject
+
+class NewsRepositoryImpl @Inject constructor(
     private val newsApi: NewsApi,
     private val newsDao: NewsDao
 ) : NewsRepository{
@@ -53,5 +55,9 @@ class NewsRepositoryImpl(
 
     override fun getArticles(): Flow<List<Article>> {
         return newsDao.getArticles()
+    }
+
+    override suspend fun getArticle(url: String): Article? {
+        return newsDao.getArticleByUrl(url = url)
     }
 }

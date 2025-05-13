@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android")
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
 }
 // Load from local.properties
 val localPropertiesFile = rootProject.file("local.properties")
@@ -78,11 +79,6 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.google.hilt.compiler)
 
-    // Firebase
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.firestore)
-    implementation(libs.firebase.messaging)
-    implementation(libs.firebase.storage.ktx)
 
     // Google Maps
 //    implementation(libs.play.services.maps)
