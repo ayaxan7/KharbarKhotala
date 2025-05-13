@@ -36,7 +36,7 @@ import com.ayaan.kharbarkhotala.utils.UIComponent
 
 @Composable
 fun DetailsScreen(
-    article: Article,
+    article: Article?,
     event: (DetailsEvent) -> Unit,
     sideEffect: UIComponent?,
     navigateUp: () -> Unit
@@ -64,21 +64,24 @@ fun DetailsScreen(
         DetailsTopBar(
             onBrowsingClick = {
             Intent(Intent.ACTION_VIEW).also {
-                it.data = Uri.parse(article.url)
+                it.data = Uri.parse(article?.url)
                 if (it.resolveActivity(context.packageManager) != null) {
                     context.startActivity(it)
                 }
             }
         }, onShareClick = {
             Intent(Intent.ACTION_SEND).also {
-                it.putExtra(Intent.EXTRA_TEXT, article.url)
+                it.putExtra(Intent.EXTRA_TEXT, article?.url)
                 it.type = "text/plain"
                 if (it.resolveActivity(context.packageManager) != null) {
                     context.startActivity(it)
                 }
             }
         }, onBookMarkClick = {
-            event(DetailsEvent.InsertDeleteArticle(article))
+            if(article?.url != null) {
+                event(DetailsEvent.InsertDeleteArticle(article))
+            }
+//            event(DetailsEvent.InsertDeleteArticle(article))
         }, onBackClick = navigateUp
         )
 
@@ -89,7 +92,7 @@ fun DetailsScreen(
         ) {
             item {
                 AsyncImage(
-                    model = ImageRequest.Builder(context = context).data(article.urlToImage)
+                    model = ImageRequest.Builder(context = context).data(article?.urlToImage)
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
@@ -100,7 +103,7 @@ fun DetailsScreen(
                 )
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
-                    text = article.title,
+                    text = article?.title.toString(),
                     style = MaterialTheme.typography.displaySmall,
                     color = colorResource(
                         id = R.color.text_title
@@ -109,7 +112,7 @@ fun DetailsScreen(
                 // Replace the Text for article.content with this code
                 Column {
                     Text(
-                        text = article.content?.split("[+")?.firstOrNull()
+                        text = article?.content?.split("[+")?.firstOrNull()
                             ?: "No content available",
                         style = MaterialTheme.typography.bodyMedium,
                         color = colorResource(id = R.color.body)
@@ -126,7 +129,7 @@ fun DetailsScreen(
                             .padding(vertical = 8.dp)
                             .clickable {
                                 Intent(Intent.ACTION_VIEW).also {
-                                    it.data = Uri.parse(article.url)
+                                    it.data = Uri.parse(article?.url)
                                     if (it.resolveActivity(context.packageManager) != null) {
                                         context.startActivity(it)
                                     }
