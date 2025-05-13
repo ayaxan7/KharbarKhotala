@@ -55,7 +55,6 @@ fun HomeScreen(
     articles: LazyPagingItems<Article>,
     state: HomeState,
     event: (HomeEvent) -> Unit,
-    navigateToSearch: () -> Unit,
     navigateToDetails: (Article) -> Unit
 ) {
     val isRefreshing = remember { mutableStateOf(false) }
