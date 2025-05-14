@@ -1,26 +1,25 @@
 package com.ayaan.kharbarkhotala.data.remote
 
-import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.ayaan.kharbarkhotala.domain.model.Article
-import com.ayaan.kharbarkhotala.BuildConfig
+import com.ayaan.kharbarkhotala.domain.model.trending.TrendingArticle
+import androidx.paging.PagingSource
 
-class NewsPagingSource(
+class TrendingPagingSource (
     private val newsApi: NewsApi,
     private val sources: String
-):PagingSource<Int,Article>() {
+):PagingSource<Int, TrendingArticle>() {
     private var totalNewsCount=0
-    override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, TrendingArticle>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage=state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1)?:anchorPage?.nextKey?.minus(1)
         }
     }
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, TrendingArticle> {
         val page = params.key ?: 1
         return try {
-            val newsResponse = newsApi.getNews(sources = sources, page = page)
+            val newsResponse = newsApi.getTrendingNews()
             totalNewsCount += newsResponse.articles.size
             val articles = newsResponse.articles.distinctBy { it.title }
             LoadResult.Page(

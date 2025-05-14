@@ -2,6 +2,7 @@ package com.ayaan.kharbarkhotala.data.remote
 
 import com.ayaan.kharbarkhotala.BuildConfig.NEWS_API_KEY
 import com.ayaan.kharbarkhotala.data.remote.dto.NewsResponse
+import com.ayaan.kharbarkhotala.data.remote.dto.TrendingNews
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -19,11 +20,11 @@ interface NewsApi {
         @Query("sources") sources: String,
         @Query("apiKey") apiKey: String=NEWS_API_KEY
     ): NewsResponse
-    @GET("trending")
+    @GET("top-headlines")
     suspend fun getTrendingNews(
-        @Query("country") country: Int,
-        @Query("page") page: Int,
-        @Query("sources") sources: String,
+        @Query("country") country: String="us",
+//        @Query("page") page: Int,
+//        @Query("sources") sources: String="SciTechDaily",
         @Query("apiKey") apiKey: String=NEWS_API_KEY
-    ): NewsResponse
+    ): TrendingNews
 }

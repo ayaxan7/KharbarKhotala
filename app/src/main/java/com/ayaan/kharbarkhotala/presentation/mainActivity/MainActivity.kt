@@ -15,20 +15,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import com.ayaan.kharbarkhotala.data.repository.TrendingNewsRepositoryImpl
 import com.ayaan.kharbarkhotala.presentation.mainActivity.MainViewModel
 import com.ayaan.kharbarkhotala.presentation.navgraph.NavGraph
 import com.ayaan.kharbarkhotala.ui.theme.KharbarKhotalaTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<MainViewModel>()
-
+//    private lateinit var trendingNewsRepositoryImpl: TrendingNewsRepositoryImpl
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
         installSplashScreen().apply {
             setKeepOnScreenCondition(condition = { viewModel.splashCondition.value })
         }
+//        lifecycleScope.launch {
+//            trendingNewsRepositoryImpl.fetchAndLogTrendingNews()
+//        }
         setContent {
             KharbarKhotalaTheme(darkTheme = false) {
 //                val isSystemInDarkMode = isSystemInDarkTheme()

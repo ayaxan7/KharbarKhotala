@@ -23,6 +23,7 @@ import com.ayaan.kharbarkhotala.presentation.newsnavigation.components.NewsBotto
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.ayaan.kharbarkhotala.domain.model.trending.TrendingArticle
 import com.ayaan.kharbarkhotala.presentation.bookmark.BookmarkScreen
 import com.ayaan.kharbarkhotala.presentation.bookmark.BookmarkViewModel
 import com.ayaan.kharbarkhotala.presentation.details.DetailsScreen
@@ -97,6 +98,7 @@ fun NewsNavigator() {
             composable(route = Route.HomeScreen.route) { backStackEntry ->
                 val viewModel: HomeViewModel = hiltViewModel()
                 val articles = viewModel.news.collectAsLazyPagingItems()
+                val trendingArticles = viewModel.trendingNews.collectAsLazyPagingItems()
                 HomeScreen(
                     articles = articles,
                     navigateToDetails = { article ->
@@ -106,7 +108,14 @@ fun NewsNavigator() {
                         )
                     },
                     event = viewModel::onEvent,
-                    state = viewModel.state.value
+                    state = viewModel.state.value,
+                    navigateToTrendingDetails = {trendingArticle->
+                        navigateToDetails(
+                            navController=navController,
+                            article = trendingArticle
+                        )
+                    },
+                    trendingArticles = trendingArticles
                 )
             }
             composable(route = Route.SearchScreen.route) {
@@ -178,6 +187,15 @@ private fun navigateToTab(navController: NavController, route: String) {
 }
 
 private fun navigateToDetails(navController: NavController, article: Article) {
+    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
+    navController.navigate(
+        route = Route.DetailsScreen.route
+    )
+}
+private fun navigateToDetails(
+    navController: NavController,
+    article: TrendingArticle,
+) {
     navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
     navController.navigate(
         route = Route.DetailsScreen.route

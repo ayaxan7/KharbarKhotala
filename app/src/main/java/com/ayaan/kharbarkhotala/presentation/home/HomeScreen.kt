@@ -1,5 +1,6 @@
 package com.ayaan.kharbarkhotala.presentation.home
 
+import android.util.Log
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
@@ -42,20 +43,24 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
+import com.ayaan.kharbarkhotala.domain.model.trending.TrendingArticle
 import com.ayaan.kharbarkhotala.presentation.Dimensions.ExtraSmallPadding
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
 import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
 import com.ayaan.kharbarkhotala.presentation.common.ArticlesList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     articles: LazyPagingItems<Article>,
+    trendingArticles: LazyPagingItems<TrendingArticle>,
     state: HomeState,
     event: (HomeEvent) -> Unit,
-    navigateToDetails: (Article) -> Unit
+    navigateToDetails: (Article) -> Unit,
+    navigateToTrendingDetails: (TrendingArticle) -> Unit
 ) {
     val isRefreshing = remember { mutableStateOf(false) }
     rememberPullToRefreshState()
@@ -80,19 +85,24 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(MediumPadding1))
 
         val scrollState = rememberScrollState(initial = state.scrollValue)
+        if (trendingArticles.itemCount == 0) {
+            Text("No trending news available")
+        }
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = MediumPadding1),
             horizontalArrangement = Arrangement.spacedBy(MediumPadding1)
         ) {
-            items(articles.itemCount) { index ->
-                articles[index]?.let { article ->
+            Log.d("HomeScreen", "Trending Articles Count: ${trendingArticles.itemCount}")
+            items(trendingArticles.itemCount) { index ->
+                Log.d("HomeScreen", "TrendingItem count: ${trendingArticles.itemCount}")
+                trendingArticles[index]?.let {
                     Card(
                         modifier = Modifier
                             .width(200.dp)
                             .height(250.dp) // Increased height
-                            .clickable { navigateToDetails(article) },
+                            .clickable { navigateToTrendingDetails(it) },
                         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = colorResource(id = R.color.white),
@@ -110,13 +120,13 @@ fun HomeScreen(
                                     .fillMaxWidth()
                                     .height(150.dp) // Reserved space for the image
                                     .clip(RectangleShape),
-                                model = article.urlToImage,
+                                model = it.urlToImage,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop
                             )
                             Spacer(modifier = Modifier.height(ExtraSmallPadding))
                             Text(
-                                text = article.title ?: "No Title",
+                                text = it.title ?: "No Title",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = colorResource(id = R.color.text_title),
                                 maxLines = 2,
