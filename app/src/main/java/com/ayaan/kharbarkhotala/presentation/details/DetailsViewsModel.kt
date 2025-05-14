@@ -38,6 +38,8 @@ class DetailsViewModel @Inject constructor(
             is DetailsEvent.RemoveSideEffect ->{
                 sideEffect = null
             }
+
+            is DetailsEvent.InsertDeleteTrendingArticle -> TODO()
         }
     }
 

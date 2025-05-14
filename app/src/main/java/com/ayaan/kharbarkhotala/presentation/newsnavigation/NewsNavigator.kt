@@ -135,16 +135,31 @@ fun NewsNavigator() {
             }
             composable(route = Route.DetailsScreen.route) {
                 val viewModel: DetailsViewModel = hiltViewModel()
-                navController.previousBackStackEntry?.savedStateHandle?.get<Article?>("article")
-                    ?.let { article ->
+                // Try to get Article first
+                val article = navController.previousBackStackEntry?.savedStateHandle?.get<Article?>("article")
+                // Try to get TrendingArticle if Article is null
+                val trendingArticle = navController.previousBackStackEntry?.savedStateHandle?.get<TrendingArticle?>("trendingArticle")
+
+                when {
+                    article != null -> {
                         DetailsScreen(
                             article = article,
                             event = viewModel::onEvent,
                             navigateUp = { navController.navigateUp() },
-                            sideEffect = viewModel.sideEffect
+                            sideEffect = viewModel.sideEffect,
+                            trendingArticle = null
                         )
                     }
-
+                    trendingArticle != null -> {
+                        DetailsScreen(
+                            trendingArticle = trendingArticle,
+                            event = viewModel::onEvent,
+                            navigateUp = { navController.navigateUp() },
+                            sideEffect = viewModel.sideEffect,
+                            article = null
+                        )
+                    }
+                }
             }
             composable(route = Route.BookmarkScreen.route) {
                 val viewModel: BookmarkViewModel = hiltViewModel()
@@ -196,7 +211,7 @@ private fun navigateToDetails(
     navController: NavController,
     article: TrendingArticle,
 ) {
-    navController.currentBackStackEntry?.savedStateHandle?.set("article", article)
+    navController.currentBackStackEntry?.savedStateHandle?.set("trendingArticle", article)
     navController.navigate(
         route = Route.DetailsScreen.route
     )

@@ -17,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val readAppEntry: ReadAppEntry,
-    private val trendingNewsRepositoryImpl: TrendingNewsRepositoryImpl
 ): ViewModel() {
 
     private val _splashCondition = mutableStateOf(true)
@@ -28,9 +27,6 @@ class MainViewModel @Inject constructor(
 
 
     init {
-//        viewModelScope.launch{
-//            trendingNewsRepositoryImpl.fetchAndLogTrendingNews()
-//        }
         readAppEntry().onEach { shouldStartFromHomeScreen ->
             if(shouldStartFromHomeScreen){
                 _startDestination.value = Route.NewsNavigation.route

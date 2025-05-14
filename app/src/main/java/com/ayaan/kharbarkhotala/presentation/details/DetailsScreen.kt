@@ -28,21 +28,23 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
+import com.ayaan.kharbarkhotala.domain.model.trending.TrendingArticle
 import com.ayaan.kharbarkhotala.presentation.Dimensions.ArticleImageHeight
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding0
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
 import com.ayaan.kharbarkhotala.presentation.details.components.DetailsTopBar
 import com.ayaan.kharbarkhotala.utils.UIComponent
+import androidx.core.net.toUri
 
 @Composable
 fun DetailsScreen(
     article: Article?,
+    trendingArticle: TrendingArticle?,
     event: (DetailsEvent) -> Unit,
     sideEffect: UIComponent?,
     navigateUp: () -> Unit
 ) {
     val context = LocalContext.current
-
     LaunchedEffect(key1 = sideEffect) {
         sideEffect?.let {
             when (sideEffect) {
@@ -50,7 +52,6 @@ fun DetailsScreen(
                     Toast.makeText(context, sideEffect.message, Toast.LENGTH_SHORT).show()
                     event(DetailsEvent.RemoveSideEffect)
                 }
-
                 else -> Unit
             }
         }
@@ -63,36 +64,43 @@ fun DetailsScreen(
     ) {
         DetailsTopBar(
             onBrowsingClick = {
-            Intent(Intent.ACTION_VIEW).also {
-                it.data = Uri.parse(article?.url)
-                if (it.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(it)
+                Intent(Intent.ACTION_VIEW).also {
+                    it.data = (article?.url ?: trendingArticle?.url)?.toUri()
+                    if (it.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(it)
+                    }
                 }
-            }
-        }, onShareClick = {
-            Intent(Intent.ACTION_SEND).also {
-                it.putExtra(Intent.EXTRA_TEXT, article?.url)
-                it.type = "text/plain"
-                if (it.resolveActivity(context.packageManager) != null) {
-                    context.startActivity(it)
+            },
+            onShareClick = {
+                Intent(Intent.ACTION_SEND).also {
+                    it.putExtra(Intent.EXTRA_TEXT, article?.url ?: trendingArticle?.url)
+                    it.type = "text/plain"
+                    if (it.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(it)
+                    }
                 }
-            }
-        }, onBookMarkClick = {
-            if(article?.url != null) {
-                event(DetailsEvent.InsertDeleteArticle(article))
-            }
-//            event(DetailsEvent.InsertDeleteArticle(article))
-        }, onBackClick = navigateUp
+            },
+            onBookMarkClick = {
+                article?.let {
+                    event(DetailsEvent.InsertDeleteArticle(it))
+                }
+                trendingArticle?.let {
+                    event(DetailsEvent.InsertDeleteTrendingArticle(it))
+                }
+            },
+            onBackClick = navigateUp
         )
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(), contentPadding = PaddingValues(
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(
                 start = MediumPadding1, end = MediumPadding1, top = MediumPadding1
             )
         ) {
             item {
                 AsyncImage(
-                    model = ImageRequest.Builder(context = context).data(article?.urlToImage)
+                    model = ImageRequest.Builder(context = context)
+                        .data(article?.urlToImage ?: trendingArticle?.urlToImage)
                         .build(),
                     contentDescription = null,
                     modifier = Modifier
@@ -103,16 +111,14 @@ fun DetailsScreen(
                 )
                 Spacer(modifier = Modifier.height(MediumPadding1))
                 Text(
-                    text = article?.title.toString(),
+                    text = article?.title ?: trendingArticle?.title ?: "No Title",
                     style = MaterialTheme.typography.displaySmall,
-                    color = colorResource(
-                        id = R.color.text_title
-                    )
+                    color = colorResource(id = R.color.text_title)
                 )
-                // Replace the Text for article.content with this code
                 Column {
                     Text(
                         text = article?.content?.split("[+")?.firstOrNull()
+                            ?: trendingArticle?.content?.split("[+")?.firstOrNull()
                             ?: "No content available",
                         style = MaterialTheme.typography.bodyMedium,
                         color = colorResource(id = R.color.body)
@@ -129,12 +135,13 @@ fun DetailsScreen(
                             .padding(vertical = 8.dp)
                             .clickable {
                                 Intent(Intent.ACTION_VIEW).also {
-                                    it.data = Uri.parse(article?.url)
+                                    it.data = (article?.url ?: trendingArticle?.url)?.toUri()
                                     if (it.resolveActivity(context.packageManager) != null) {
                                         context.startActivity(it)
                                     }
                                 }
-                            })
+                            }
+                    )
                 }
             }
         }
