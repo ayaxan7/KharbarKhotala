@@ -14,6 +14,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,7 +34,8 @@ import kotlinx.coroutines.launch
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.paging.LoadState
-import com.ayaan.kharbarkhotala.presentation.Dimensions.ExtraSmallPadding
+import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
+import com.ayaan.kharbarkhotala.presentation.common.TopBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,7 +45,9 @@ fun HomeScreen(
     state: HomeState,
     event: (HomeEvent) -> Unit,
     navigateToDetails: (Article) -> Unit,
-    navigateToTrendingDetails: (TrendingArticle) -> Unit
+    navigateToTrendingDetails: (TrendingArticle) -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToBookmarks: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val tabTitles = listOf("Trending", "News")
@@ -55,25 +60,31 @@ fun HomeScreen(
             .padding(top = MediumPadding1)
             .statusBarsPadding()
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .width(150.dp)
-                .height(30.dp)
-                .padding(horizontal = MediumPadding1)
+        TopBar(
+            onSearchClick = navigateToSearch,
+            onBookmarkClick = navigateToBookmarks,
         )
 
-        Spacer(modifier = Modifier.height(MediumPadding1))
-        TabRow(selectedTabIndex = pagerState.currentPage) {
+        Spacer(modifier = Modifier.height(SmallPadding))
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            containerColor = Color.White,
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                    color = Color.Blue
+                )
+            }
+        ) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,
                     onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(title) })
+                    text = { Text(text = title, color = Color.Blue) }
+                )
             }
         }
-        Spacer(modifier= Modifier.height(ExtraSmallPadding))
+        Spacer(modifier= Modifier.height(MediumPadding1))
 
         HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
             when (page) {

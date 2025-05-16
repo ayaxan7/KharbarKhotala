@@ -101,21 +101,33 @@ fun NewsNavigator() {
                 val trendingArticles = viewModel.trendingNews.collectAsLazyPagingItems()
                 HomeScreen(
                     articles = articles,
+                    trendingArticles = trendingArticles,
+                    state = viewModel.state.value,
+                    event = viewModel::onEvent,
                     navigateToDetails = { article ->
                         navigateToDetails(
                             navController = navController,
                             article = article
                         )
                     },
-                    event = viewModel::onEvent,
-                    state = viewModel.state.value,
-                    navigateToTrendingDetails = {trendingArticle->
+                    navigateToTrendingDetails = { trendingArticle ->
                         navigateToDetails(
-                            navController=navController,
+                            navController = navController,
                             article = trendingArticle
                         )
                     },
-                    trendingArticles = trendingArticles
+                    navigateToSearch = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.SearchScreen.route
+                        )
+                    },
+                    navigateToBookmarks = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.BookmarkScreen.route
+                        )
+                    }
                 )
             }
             composable(route = Route.SearchScreen.route) {
