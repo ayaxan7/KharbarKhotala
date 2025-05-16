@@ -1,4 +1,4 @@
-package com.ayaan.kharbarkhotala.presentation.home
+package com.ayaan.kharbarkhotala.presentation.common
 
 import android.util.Log
 import androidx.compose.animation.core.LinearEasing
@@ -9,6 +9,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
@@ -56,68 +58,60 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.ayaan.kharbarkhotala.presentation.common.TrendingSection
+import androidx.paging.LoadState
+import com.ayaan.kharbarkhotala.presentation.home.HomeEvent
+import com.ayaan.kharbarkhotala.presentation.home.HomeState
+import com.ayaan.kharbarkhotala.presentation.home.components.TrendingArticleCard
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(
-    articles: LazyPagingItems<Article>,
+fun TrendingSection(
     trendingArticles: LazyPagingItems<TrendingArticle>,
     state: HomeState,
     event: (HomeEvent) -> Unit,
-    navigateToDetails: (Article) -> Unit,
     navigateToTrendingDetails: (TrendingArticle) -> Unit
 ) {
-    val pagerState = rememberPagerState(pageCount = { 2 })
-    val tabTitles = listOf("Trending", "News")
+    val handlePagingResult = handlePagingResult(trendingArticles)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .padding(top = MediumPadding1)
-            .statusBarsPadding()
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_logo),
-            contentDescription = null,
-            modifier = Modifier
-                .width(150.dp)
-                .height(30.dp)
-                .padding(horizontal = MediumPadding1)
-        )
-
-        Spacer(modifier = Modifier.height(MediumPadding1))
-        val scope = rememberCoroutineScope()
-        TabRow(selectedTabIndex = pagerState.currentPage) {
-            tabTitles.forEachIndexed { index, title ->
-                Tab(
-                    selected = pagerState.currentPage == index,
-                    onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(title) }
-                )
+    if (handlePagingResult) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.spacedBy(MediumPadding1),
+            contentPadding = PaddingValues(all = ExtraSmallPadding)
+        ) {
+            items(trendingArticles.itemCount) { index ->
+                trendingArticles[index]?.let { article ->
+                    TrendingArticleCard(
+                        article = article,
+                        onClick = { navigateToTrendingDetails(article) }
+                    )
+                }
             }
         }
+    }
+}
+@Composable
+fun handlePagingResult(articles: LazyPagingItems<TrendingArticle>): Boolean {
+    val loadState = articles.loadState
+    val error = when {
+        loadState.refresh is LoadState.Error -> loadState.refresh as LoadState.Error
+        loadState.prepend is LoadState.Error -> loadState.prepend as LoadState.Error
+        loadState.append is LoadState.Error -> loadState.append as LoadState.Error
+        else -> null
+    }
 
-        HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
-            when (page) {
-                0 -> { // Trending
-                    TrendingSection(
-                        trendingArticles = trendingArticles,
-                        state = state,
-                        event = event,
-                        navigateToTrendingDetails = navigateToTrendingDetails
-                    )
-                }
+    return when {
+        loadState.refresh is LoadState.Loading -> {
+            ShimmerEffect()
+            false
+        }
 
-                1 -> { // Regular News
-                    ArticlesList(
-                        modifier = Modifier.padding(horizontal = MediumPadding1),
-                        articles = articles,
-                        onClick = navigateToDetails
-                    )
-                }
-            }
+        error != null -> {
+            EmptyScreen(error = error)
+            false
+        }
+
+        else -> {
+            true
         }
     }
 }

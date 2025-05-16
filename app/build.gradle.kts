@@ -79,7 +79,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.google.hilt.compiler)
 
-
+// build.gradle
+    implementation ("androidx.compose.foundation:foundation:1.6.0") // or latest
     // Google Maps
 //    implementation(libs.play.services.maps)
 //    implementation(libs.play.services.location)
