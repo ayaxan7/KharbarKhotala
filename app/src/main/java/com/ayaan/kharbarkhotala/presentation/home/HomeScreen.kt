@@ -36,7 +36,7 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.paging.LoadState
 import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
 import com.ayaan.kharbarkhotala.presentation.common.TopBar
-
+import com.ayaan.kharbarkhotala.ui.theme.BarBlue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -50,7 +50,7 @@ fun HomeScreen(
     navigateToBookmarks: () -> Unit
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
-    val tabTitles = listOf("Trending", "News")
+    val tabTitles = listOf("General", "Trending")
     val scope = rememberCoroutineScope()
 
     Column(
@@ -72,7 +72,7 @@ fun HomeScreen(
             indicator = { tabPositions ->
                 SecondaryIndicator(
                     Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                    color = Color.Blue
+                    color = BarBlue
                 )
             }
         ) {
@@ -80,7 +80,7 @@ fun HomeScreen(
                 Tab(
                     selected = pagerState.currentPage == index,
                     onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(text = title, color = Color.Blue) }
+                    text = { Text(text = title, color = BarBlue) }
                 )
             }
         }
@@ -88,7 +88,7 @@ fun HomeScreen(
 
         HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
             when (page) {
-                0 -> { // Trending
+                1 -> { // Trending
                     val trendingRefreshState = rememberPullToRefreshState()
                     PullToRefreshBox(
                         state= trendingRefreshState,
@@ -104,7 +104,7 @@ fun HomeScreen(
                     }
                 }
 
-                1 -> { // Regular News
+                0 -> { // Regular News
                     val newsRefreshState = rememberPullToRefreshState()
                     PullToRefreshBox(
                         state= newsRefreshState,

@@ -184,6 +184,18 @@ fun NewsNavigator() {
                             navController = navController,
                             article = article
                         )
+                    },
+                    navigateToSearch = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.SearchScreen.route
+                        )
+                    },
+                    navigateToBookmarks = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.BookmarkScreen.route
+                        )
                     }
                 )
             }

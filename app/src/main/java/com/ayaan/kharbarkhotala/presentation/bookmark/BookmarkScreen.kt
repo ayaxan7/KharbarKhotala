@@ -1,75 +1,88 @@
 package com.ayaan.kharbarkhotala.presentation.bookmark
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
-import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
-import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding0
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
+import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
 import com.ayaan.kharbarkhotala.presentation.common.ArticlesList
-import com.ayaan.kharbarkhotala.presentation.navgraph.Route
+import com.ayaan.kharbarkhotala.presentation.common.TopBar
+import com.ayaan.kharbarkhotala.ui.theme.BarBlue
+import kotlinx.coroutines.launch
 
-//@Composable
-//fun BookmarkScreen(
-//    state: BookmarkState, navigate: (String) -> Unit
-//) {
-//    Column(
-//        modifier = Modifier
-//            .fillMaxSize()
-//            .statusBarsPadding()
-//            .padding(top = MediumPadding0, start = MediumPadding0, end = MediumPadding0)
-//    ) {
-//        Text(
-//            text = "Bookmarks",
-//            style= MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-//            color = Color.Black
-//        )
-//        Spacer(modifier = Modifier.height(MediumPadding0))
-//        ArticlesList(
-//            articles = state.articles,
-//            onClick = {
-//                navigate(Route.DetailsScreen.route )
-//            }
-//        )
-//    }
-//}
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookmarkScreen(
     state: BookmarkState,
-    navigateToDetails: (Article) -> Unit
+    navigateToDetails: (Article) -> Unit,
+    navigateToSearch: () -> Unit,
+    navigateToBookmarks: () -> Unit
 ) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
+            .background(Color.White)
+            .padding(top = MediumPadding1)
             .statusBarsPadding()
-            .padding(top = MediumPadding1, start = MediumPadding1, end = MediumPadding1)
     ) {
-
-        Text(
-            text = "Bookmark",
-            style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
-            color = colorResource(
-                id = R.color.text_title
-            )
+        TopBar(
+            onSearchClick = navigateToSearch,
+            onBookmarkClick = navigateToBookmarks,
         )
+
+        Spacer(modifier = Modifier.height(SmallPadding))
+
+        // Single tab for bookmarks - following the Home UI pattern
+        TabRow(
+            selectedTabIndex = 0,
+            containerColor = Color.White,
+            indicator = { tabPositions ->
+                SecondaryIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[0]),
+                    color = BarBlue
+                )
+            }
+        ) {
+            Tab(
+                selected = true,
+                onClick = { /* Already selected */ },
+                text = { Text(text = "Bookmarks", color = BarBlue) }
+            )
+        }
 
         Spacer(modifier = Modifier.height(MediumPadding1))
 
-        ArticlesList(
-            articles = state.articles,
-            onClick = navigateToDetails
-        )
+        // Pull-to-refresh for bookmarks
+        val refreshState = rememberPullToRefreshState()
+
+        PullToRefreshBox(
+            state = refreshState,
+            isRefreshing = false, // No actual refresh logic for bookmarks since they're local
+            onRefresh = { /* Optional: could add a refresh mechanism */ }
+        ) {
+            // Content
+            ArticlesList(
+                modifier = Modifier.padding(horizontal = MediumPadding1),
+                articles = state.articles,
+                onClick = navigateToDetails
+            )
+        }
     }
 }
