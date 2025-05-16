@@ -1,62 +1,38 @@
 package com.ayaan.kharbarkhotala.presentation.home
 
-import android.util.Log
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import coil.compose.AsyncImage
 import com.ayaan.kharbarkhotala.R
 import com.ayaan.kharbarkhotala.domain.model.Article
 import com.ayaan.kharbarkhotala.domain.model.trending.TrendingArticle
-import com.ayaan.kharbarkhotala.presentation.Dimensions.ExtraSmallPadding
 import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
-import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
 import com.ayaan.kharbarkhotala.presentation.common.ArticlesList
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import com.ayaan.kharbarkhotala.presentation.common.TrendingSection
+import kotlinx.coroutines.launch
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.paging.LoadState
+import com.ayaan.kharbarkhotala.presentation.Dimensions.ExtraSmallPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -70,6 +46,7 @@ fun HomeScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val tabTitles = listOf("Trending", "News")
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -88,34 +65,47 @@ fun HomeScreen(
         )
 
         Spacer(modifier = Modifier.height(MediumPadding1))
-        val scope = rememberCoroutineScope()
         TabRow(selectedTabIndex = pagerState.currentPage) {
             tabTitles.forEachIndexed { index, title ->
                 Tab(
                     selected = pagerState.currentPage == index,
                     onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                    text = { Text(title) }
-                )
+                    text = { Text(title) })
             }
         }
+        Spacer(modifier= Modifier.height(ExtraSmallPadding))
 
         HorizontalPager(state = pagerState, modifier = Modifier.weight(1f)) { page ->
             when (page) {
                 0 -> { // Trending
-                    TrendingSection(
-                        trendingArticles = trendingArticles,
-                        state = state,
-                        event = event,
-                        navigateToTrendingDetails = navigateToTrendingDetails
-                    )
+                    val trendingRefreshState = rememberPullToRefreshState()
+                    PullToRefreshBox(
+                        state= trendingRefreshState,
+                        isRefreshing = trendingArticles.loadState.refresh is LoadState.Loading,
+                        onRefresh = { trendingArticles.refresh() }
+                    ) {
+                        TrendingSection(
+                            trendingArticles = trendingArticles,
+                            state = state,
+                            event = event,
+                            navigateToTrendingDetails = navigateToTrendingDetails
+                        )
+                    }
                 }
 
                 1 -> { // Regular News
-                    ArticlesList(
-                        modifier = Modifier.padding(horizontal = MediumPadding1),
-                        articles = articles,
-                        onClick = navigateToDetails
-                    )
+                    val newsRefreshState = rememberPullToRefreshState()
+                    PullToRefreshBox(
+                        state= newsRefreshState,
+                        isRefreshing = articles.loadState.refresh is LoadState.Loading,
+                        onRefresh = { articles.refresh() }
+                    ) {
+                        ArticlesList(
+                            modifier = Modifier.padding(horizontal = MediumPadding1),
+                            articles = articles,
+                            onClick = navigateToDetails
+                        )
+                    }
                 }
             }
         }
