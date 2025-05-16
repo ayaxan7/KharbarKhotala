@@ -15,80 +15,28 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ayaan.kharbarkhotala.R
-import com.ayaan.kharbarkhotala.domain.model.Article
-import com.ayaan.kharbarkhotala.presentation.home.HomeViewModel
-import com.ayaan.kharbarkhotala.presentation.navgraph.Route
-import com.ayaan.kharbarkhotala.presentation.newsnavigation.components.NewsBottomNavigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.ayaan.kharbarkhotala.domain.model.Article
 import com.ayaan.kharbarkhotala.domain.model.trending.TrendingArticle
 import com.ayaan.kharbarkhotala.presentation.bookmark.BookmarkScreen
 import com.ayaan.kharbarkhotala.presentation.bookmark.BookmarkViewModel
 import com.ayaan.kharbarkhotala.presentation.details.DetailsScreen
 import com.ayaan.kharbarkhotala.presentation.details.DetailsViewModel
 import com.ayaan.kharbarkhotala.presentation.home.HomeScreen
-import com.ayaan.kharbarkhotala.presentation.newsnavigation.components.BottomNavigationItem
+import com.ayaan.kharbarkhotala.presentation.home.HomeViewModel
+import com.ayaan.kharbarkhotala.presentation.navgraph.Route
 import com.ayaan.kharbarkhotala.presentation.search.SearchScreen
 import com.ayaan.kharbarkhotala.presentation.search.SearchViewModel
 
 @Composable
 fun NewsNavigator() {
-    val bottomNavigationItems = remember {
-        listOf(
-            BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
-            BottomNavigationItem(icon = R.drawable.ic_search, text = "Search"),
-            BottomNavigationItem(icon = R.drawable.ic_bookmark, text = "Bookmark"),
-        )
-    }
-
     val navController = rememberNavController()
     val backStackState = navController.currentBackStackEntryAsState().value
-    var selectedItem by rememberSaveable {
-        mutableStateOf(0)
-    }
-    selectedItem = when (backStackState?.destination?.route) {
-        Route.HomeScreen.route -> 0
-        Route.SearchScreen.route -> 1
-        Route.BookmarkScreen.route -> 2
-        else -> 0
-    }
 
-    //Hide the bottom navigation when the user is in the details screen
-    val isBottomBarVisible = remember(key1 = backStackState) {
-        backStackState?.destination?.route == Route.HomeScreen.route ||
-                backStackState?.destination?.route == Route.SearchScreen.route ||
-                backStackState?.destination?.route == Route.BookmarkScreen.route
-    }
-
-
-    Scaffold(modifier = Modifier.fillMaxSize(), bottomBar = {
-        if (isBottomBarVisible) {
-            NewsBottomNavigation(
-                items = bottomNavigationItems,
-                selectedItem = selectedItem,
-                onItemClick = { index ->
-                    when (index) {
-                        0 -> navigateToTab(
-                            navController = navController,
-                            route = Route.HomeScreen.route
-                        )
-
-                        1 -> navigateToTab(
-                            navController = navController,
-                            route = Route.SearchScreen.route
-                        )
-
-                        2 -> navigateToTab(
-                            navController = navController,
-                            route = Route.BookmarkScreen.route
-                        )
-                    }
-                }
-            )
-        }
-    }) {
+    // Scaffold without bottom bar
+    Scaffold(modifier = Modifier.fillMaxSize()) {
         val bottomPadding = it.calculateBottomPadding()
         NavHost(
             navController = navController,
@@ -243,6 +191,7 @@ private fun navigateToDetails(navController: NavController, article: Article) {
         route = Route.DetailsScreen.route
     )
 }
+
 private fun navigateToDetails(
     navController: NavController,
     article: TrendingArticle,

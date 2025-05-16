@@ -3,6 +3,7 @@ package com.ayaan.kharbarkhotala.presentation.details
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -35,6 +37,7 @@ import com.ayaan.kharbarkhotala.presentation.Dimensions.MediumPadding1
 import com.ayaan.kharbarkhotala.presentation.details.components.DetailsTopBar
 import com.ayaan.kharbarkhotala.utils.UIComponent
 import androidx.core.net.toUri
+import com.ayaan.kharbarkhotala.ui.theme.BarBlue
 
 @Composable
 fun DetailsScreen(
@@ -61,6 +64,7 @@ fun DetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .statusBarsPadding()
+            .background(Color.White)
     ) {
         DetailsTopBar(
             onBrowsingClick = {
@@ -92,7 +96,7 @@ fun DetailsScreen(
         )
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().background(Color.White),
             contentPadding = PaddingValues(
                 start = MediumPadding1, end = MediumPadding1, top = MediumPadding1
             )
@@ -117,9 +121,11 @@ fun DetailsScreen(
                 )
                 Column {
                     Text(
-                        text = article?.content?.split("[+")?.firstOrNull()
-                            ?: trendingArticle?.content?.split("[+")?.firstOrNull()
-                            ?: "No content available",
+                        text = article?.content?.split("[+")?.firstOrNull()?.let {
+                            if (it.length > 3000) it.take(3000) + "..." else it
+                        } ?: trendingArticle?.content?.split("[+")?.firstOrNull()?.let {
+                            if (it.length > 3000) it.take(3000) + "..." else it
+                        } ?: "No content available",
                         style = MaterialTheme.typography.bodyMedium,
                         color = colorResource(id = R.color.body)
                     )
@@ -129,7 +135,7 @@ fun DetailsScreen(
                     Text(
                         text = "Click here to read more",
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold
+                            color = BarBlue, fontWeight = FontWeight.Bold
                         ),
                         modifier = Modifier
                             .padding(vertical = 8.dp)
