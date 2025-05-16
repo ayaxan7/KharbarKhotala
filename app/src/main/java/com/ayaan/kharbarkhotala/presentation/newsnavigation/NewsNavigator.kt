@@ -32,9 +32,9 @@ import com.ayaan.kharbarkhotala.presentation.home.HomeScreen
 import com.ayaan.kharbarkhotala.presentation.newsnavigation.components.BottomNavigationItem
 import com.ayaan.kharbarkhotala.presentation.search.SearchScreen
 import com.ayaan.kharbarkhotala.presentation.search.SearchViewModel
+
 @Composable
 fun NewsNavigator() {
-
     val bottomNavigationItems = remember {
         listOf(
             BottomNavigationItem(icon = R.drawable.ic_home, text = "Home"),
@@ -141,6 +141,18 @@ fun NewsNavigator() {
                         navigateToDetails(
                             navController = navController,
                             article = article
+                        )
+                    },
+                    navigateToSearch = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.SearchScreen.route
+                        )
+                    },
+                    navigateToBookmarks = {
+                        navigateToTab(
+                            navController = navController,
+                            route = Route.BookmarkScreen.route
                         )
                     }
                 )
