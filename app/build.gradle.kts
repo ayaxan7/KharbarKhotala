@@ -16,6 +16,7 @@ val localProperties = Properties().apply {
     }
 }
 val newsApiKey = localProperties.getProperty("NEWS_API_KEY") ?: "\"MISSING_API_KEY\""
+val geminiApiKey = localProperties.getProperty("GEMINI_API_KEY") ?: "\"MISSING_GEMINI_API_KEY\""
 
 android {
     namespace = "com.ayaan.kharbarkhotala"
@@ -28,6 +29,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         buildConfigField("String", "NEWS_API_KEY", "\"$newsApiKey\"")
+        buildConfigField("String", "GEMINI_API_KEY", "\"$geminiApiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -130,4 +132,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.paging)
     implementation(libs.androidx.room.ktx)
+
+    // Gemini AI
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
 }

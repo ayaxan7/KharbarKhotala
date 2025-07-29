@@ -117,18 +117,26 @@ fun NewsNavigator() {
                         DetailsScreen(
                             article = article,
                             event = viewModel::onEvent,
-                            navigateUp = { navController.navigateUp() },
+                            navigateUp = {
+                                navController.previousBackStackEntry?.savedStateHandle?.set<TrendingArticle?>("article", null)
+                                navController.navigateUp()
+                            },
                             sideEffect = viewModel.sideEffect,
-                            trendingArticle = null
+                            trendingArticle = null,
+                            viewModel = viewModel
                         )
                     }
                     trendingArticle != null -> {
                         DetailsScreen(
                             trendingArticle = trendingArticle,
                             event = viewModel::onEvent,
-                            navigateUp = { navController.navigateUp() },
+                            navigateUp = {
+                                navController.previousBackStackEntry?.savedStateHandle?.set<TrendingArticle?>("trendingArticle", null)
+                                navController.navigateUp()
+                            },
                             sideEffect = viewModel.sideEffect,
-                            article = null
+                            article = null,
+                            viewModel = viewModel
                         )
                     }
                 }

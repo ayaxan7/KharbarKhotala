@@ -7,4 +7,5 @@ sealed class DetailsEvent {
     data class InsertDeleteArticle(val article: Article) : DetailsEvent()
     data class InsertDeleteTrendingArticle(val trendingArticle: TrendingArticle) : DetailsEvent()
     object RemoveSideEffect : DetailsEvent()
+    object SummarizeArticle : DetailsEvent()
 }
