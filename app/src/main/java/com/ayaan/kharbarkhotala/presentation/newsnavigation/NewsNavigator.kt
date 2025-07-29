@@ -5,11 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -33,7 +28,7 @@ import com.ayaan.kharbarkhotala.presentation.search.SearchViewModel
 @Composable
 fun NewsNavigator() {
     val navController = rememberNavController()
-    val backStackState = navController.currentBackStackEntryAsState().value
+    val detailsViewModel: DetailsViewModel=hiltViewModel()
 
     // Scaffold without bottom bar
     Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -107,9 +102,7 @@ fun NewsNavigator() {
             }
             composable(route = Route.DetailsScreen.route) {
                 val viewModel: DetailsViewModel = hiltViewModel()
-                // Try to get Article first
                 val article = navController.previousBackStackEntry?.savedStateHandle?.get<Article?>("article")
-                // Try to get TrendingArticle if Article is null
                 val trendingArticle = navController.previousBackStackEntry?.savedStateHandle?.get<TrendingArticle?>("trendingArticle")
 
                 when {
@@ -118,8 +111,10 @@ fun NewsNavigator() {
                             article = article,
                             event = viewModel::onEvent,
                             navigateUp = {
-                                navController.previousBackStackEntry?.savedStateHandle?.set<TrendingArticle?>("article", null)
-                                navController.navigateUp()
+                                navigateUp(
+                                    navController=navController,
+                                    article = article
+                                )
                             },
                             sideEffect = viewModel.sideEffect,
                             trendingArticle = null,
@@ -131,8 +126,10 @@ fun NewsNavigator() {
                             trendingArticle = trendingArticle,
                             event = viewModel::onEvent,
                             navigateUp = {
-                                navController.previousBackStackEntry?.savedStateHandle?.set<TrendingArticle?>("trendingArticle", null)
-                                navController.navigateUp()
+                                navigateUp(
+                                    navController=navController,
+                                    trendingArticle = trendingArticle
+                                )
                             },
                             sideEffect = viewModel.sideEffect,
                             article = null,
@@ -180,7 +177,13 @@ fun OnBackClickStateSaver(navController: NavController) {
         )
     }
 }
-
+private fun navigateUp(navController: NavController,article: Article?=null,trendingArticle: TrendingArticle?=null) {
+    if(article!=null) {
+        navController.previousBackStackEntry?.savedStateHandle?.set<Article?>("article", null)
+    }else if(trendingArticle!=null) {
+        navController.previousBackStackEntry?.savedStateHandle?.set<TrendingArticle?>("trendingArticle", null)
+    }
+    navController.navigateUp()}
 private fun navigateToTab(navController: NavController, route: String) {
     navController.navigate(route) {
         navController.graph.startDestinationRoute?.let { screen_route ->

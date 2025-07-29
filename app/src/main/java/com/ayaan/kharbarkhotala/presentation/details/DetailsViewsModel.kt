@@ -39,6 +39,8 @@ class DetailsViewModel @Inject constructor(
     fun setCurrentArticle(article: Article?, trendingArticle: TrendingArticle?) {
         currentArticle = article
         currentTrendingArticle = trendingArticle
+        articleSummary = null
+        sideEffect = null
     }
 
     fun onEvent(event: DetailsEvent) {

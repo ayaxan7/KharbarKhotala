@@ -66,6 +66,12 @@ fun DetailsScreen(
     viewModel: DetailsViewModel
 ) {
     val context = LocalContext.current
+
+    BackHandler {
+//        viewModel.emptyArticle()
+        navigateUp()
+    }
+
     // Set current article in viewModel when screen is composed
     LaunchedEffect(article, trendingArticle) {
         viewModel.setCurrentArticle(article, trendingArticle)
@@ -115,7 +121,9 @@ fun DetailsScreen(
                     event(DetailsEvent.InsertDeleteTrendingArticle(it))
                 }
             },
-            onBackClick = navigateUp
+            onBackClick = {
+                navigateUp()
+            }
         )
 
         LazyColumn(

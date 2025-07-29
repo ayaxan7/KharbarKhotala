@@ -1,5 +1,6 @@
 package com.ayaan.kharbarkhotala.presentation.home
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -33,9 +34,12 @@ import com.ayaan.kharbarkhotala.presentation.common.TrendingSection
 import kotlinx.coroutines.launch
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import com.ayaan.kharbarkhotala.presentation.Dimensions.SmallPadding
 import com.ayaan.kharbarkhotala.presentation.common.TopBar
+import com.ayaan.kharbarkhotala.presentation.details.DetailsViewModel
 import com.ayaan.kharbarkhotala.ui.theme.BarBlue
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +51,7 @@ fun HomeScreen(
     navigateToDetails: (Article) -> Unit,
     navigateToTrendingDetails: (TrendingArticle) -> Unit,
     navigateToSearch: () -> Unit,
-    navigateToBookmarks: () -> Unit
+    navigateToBookmarks: () -> Unit,
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
     val tabTitles = listOf("General", "Trending")
